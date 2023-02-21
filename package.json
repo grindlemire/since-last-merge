@@ -10,8 +10,8 @@
     "Other"
   ],
   "activationEvents": [
-		"*"
-	],
+    "*"
+  ],
   "main": "./out/extension.js",
   "contributes": {
     "views": {
@@ -27,7 +27,18 @@
         "command": "git-file-list.helloWorld",
         "title": "Hello World"
       }
-    ]
+    ],
+    "colors": [
+      {
+          "id": "editorManager.treeItemTextForeground",
+          "description": "Color for a TreeIteem label",
+          "defaults": {
+              "dark": "#00ccff",   
+              "light": "#000000",
+              "highContrast": "errorForeground" 
+          }
+      }
+  ]
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
