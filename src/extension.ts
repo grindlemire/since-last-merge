@@ -7,9 +7,14 @@ import { FileDecoratorProvider } from './fileDecoratorProvider';
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
-    // // Use the console to output diagnostic information (console.log) and errors (console.error)
-    // // This line of code will only be executed once when your extension is activated
-    // console.log('Congratulations, your extension "git-file-list" is now active!');
+    vscode.commands.registerCommand('git-file-list.open', (path) => {
+        if (vscode.workspace.workspaceFolders !== undefined) {
+            const workspace = vscode.workspace.workspaceFolders[0].uri;
+            const fileURI = vscode.Uri.file(workspace.path + '/' + path);
+            // TODO: figure out how to do git diffs here
+            vscode.commands.executeCommand('vscode.diff', fileURI, fileURI);
+        }
+    });
 
     const gitFilesChangedProvider = new GitFilesChangedProvider(context);
     vscode.window.registerTreeDataProvider('git-files-changed', gitFilesChangedProvider);

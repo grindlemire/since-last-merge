@@ -24,10 +24,20 @@
     },
     "commands": [
       {
-        "command": "git-file-list.helloWorld",
-        "title": "Hello World"
+        "title": "GLF: Open File",
+        "command": "git-file-list.open",
+        "icon": "$(compare-changes)"
       }
     ],
+    "menus": {
+      "view/item/context": [
+        {
+          "command": "git-file-list.open",
+          "when": "view == git-files-changed",
+          "group": "inline"
+        }
+      ]
+    },
     "colors": [
       {
           "id": "editorManager.treeItemTextForeground",

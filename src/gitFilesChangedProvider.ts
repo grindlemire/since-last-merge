@@ -1,27 +1,5 @@
-import { execSync } from 'child_process';
 import * as vscode from 'vscode';
-
-// interface ScmCommandOptions {
-//     repository?: boolean;
-//     diff?: boolean;
-// }
-// interface ScmCommand {
-// 	commandId: string;
-// 	key: string;
-// 	method: Function;
-// 	options: ScmCommandOptions;
-// }
-// const Commands: ScmCommand[] = [];
-
-// function command(commandId: string, options: ScmCommandOptions = {}): Function {
-//     return (_target: any, key: string, descriptor: any) => {
-//         if (!(typeof descriptor.value === 'function')) {
-//             throw new Error('not supported');
-//         }
-
-//         Commands.push({ commandId, key, method: descriptor.value, options });
-//     };
-// }
+import { getDiffs, getDiff } from './git';
 
 export class GitFilesChangedProvider implements vscode.TreeDataProvider<string> {
     private _onDidChangeTreeData: vscode.EventEmitter<string | undefined> = new vscode.EventEmitter<
@@ -51,14 +29,23 @@ export class GitFilesChangedProvider implements vscode.TreeDataProvider<string> 
     }
 
     getTreeItem(element: string): vscode.TreeItem | Thenable<vscode.TreeItem> {
-        var treeItem: vscode.TreeItem = new vscode.TreeItem(element);
-        treeItem.resourceUri = vscode.Uri.file(element + '/foobar');
+        const diff = getDiff(this.workspacePath, element);
+        var treeItem: vscode.TreeItem = new vscode.TreeItem(diff.name);
+        treeItem.resourceUri = vscode.Uri.file(diff.path + '/.git-file-list');
+        treeItem.tooltip = diff.path;
+        treeItem.id = diff.path;
+        treeItem.command = {
+            title: 'open file',
+            command: 'vscode.open',
+            arguments: [vscode.Uri.file(this.workspacePath + '/' + diff.path)],
+        };
         return treeItem;
     }
+
     getChildren(element?: string | undefined): vscode.ProviderResult<string[]> {
-        const child = execSync(`git diff --name-only master`, { cwd: this.workspacePath });
-        return child.toString().split('\n');
+        return getDiffs(this.workspacePath).map((diff) => diff.path);
     }
+
     getParent?(element: string): vscode.ProviderResult<string> {
         return null;
     }
