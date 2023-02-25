@@ -1,7 +1,7 @@
-import { execSync } from 'child_process';
+import { execSync, spawnSync } from 'child_process';
 import * as vscode from 'vscode';
 
-enum Change {
+export enum Change {
     unkown,
     add,
     modify,
@@ -47,9 +47,22 @@ export interface Diff {
     change: Change;
 }
 
+export const getRemoteSrc = (path: string, workspace: string): string => {
+    var spawn = spawnSync('git', ['show', `origin/master:${path}`], { cwd: workspace, encoding: 'utf-8' });
+    var errorText = spawn.stderr.toString().trim();
+
+    if (errorText) {
+        if (errorText.indexOf('exists on disk, but not in')) {
+            return '';
+        }
+        throw new Error(errorText);
+    } else {
+        return spawn.stdout.toString().trim();
+    }
+};
+
 export const getDiffs = (workspace: string): Diff[] => {
-    const diffs = execSync(`git diff --name-status master`, { cwd: workspace })
-        .toString()
+    const diffs = execSync(`git diff --name-status master`, { cwd: workspace, encoding: 'utf-8' })
         .split('\n')
         .filter((line) => line.trim() !== '')
         .map((line) => {
@@ -61,8 +74,7 @@ export const getDiffs = (workspace: string): Diff[] => {
             };
         });
 
-    const untracked = execSync(`git ls-files --others --exclude-standard`, { cwd: workspace })
-        .toString()
+    const untracked = execSync(`git ls-files --others --exclude-standard`, { cwd: workspace, encoding: 'utf-8' })
         .split('\n')
         .map((line) => {
             return {
