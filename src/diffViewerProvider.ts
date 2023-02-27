@@ -16,9 +16,17 @@ export class DiffViewerProvider implements vscode.TextDocumentContentProvider {
 
     provideTextDocumentContent(uri: vscode.Uri): string {
         // todo: handle errors better (when it is local but not remote)
-        // todo: get gutter colors working
         // todo: refactor all the code
+        // todo: make everything auto fetch and auto update
+        console.log(`URI: ${uri.path}`);
+        console.log(`${getRemoteSrc(uri.path, this.workspacePath)}`);
         return getRemoteSrc(uri.path, this.workspacePath);
+    }
+
+    provideOriginalResource(uri: vscode.Uri, cancellationToken: vscode.CancellationToken): vscode.Uri {
+        const myuri = vscode.Uri.parse('diff-viewer-quick:' + uri.path.replace(this.workspacePath + '/', ''));
+        console.log(`ORIGINAL RESOURCE IS ${myuri}`);
+        return myuri;
     }
 }
 

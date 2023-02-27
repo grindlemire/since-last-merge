@@ -11,6 +11,7 @@ import { Change, getDiff } from './git';
 export function activate(context: vscode.ExtensionContext) {
     const diffViewerProvider = new DiffViewerProvider(context);
     vscode.workspace.registerTextDocumentContentProvider('diff-viewer', diffViewerProvider);
+    vscode.workspace.registerTextDocumentContentProvider('diff-viewer-quick', diffViewerProvider);
 
     const emptyViewerProvider = new EmptyViewerProvider(context);
     vscode.workspace.registerTextDocumentContentProvider('empty-viewer', emptyViewerProvider);
@@ -32,6 +33,9 @@ export function activate(context: vscode.ExtensionContext) {
             vscode.commands.executeCommand('vscode.diff', diffURI, fileURI, 'remote ⇔ local');
         }
     });
+
+    const myscm = vscode.scm.createSourceControl('my-scm-control', 'joelgit');
+    myscm.quickDiffProvider = diffViewerProvider;
 }
 
 // This method is called when your extension is deactivated

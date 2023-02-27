@@ -48,13 +48,16 @@ export interface Diff {
 }
 
 export const getRemoteSrc = (path: string, workspace: string): string => {
+    console.log('GETTING REMOTE SOURCE');
     var spawn = spawnSync('git', ['show', `origin/master:${path}`], { cwd: workspace, encoding: 'utf-8' });
     var errorText = spawn.stderr.toString().trim();
 
     if (errorText) {
         if (errorText.indexOf('exists on disk, but not in')) {
+            console.log('does not exist in remote');
             return '';
         }
+        console.error(`ERROR: ${errorText}`);
         throw new Error(errorText);
     } else {
         return spawn.stdout.toString().trim();
