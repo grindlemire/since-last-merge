@@ -108,7 +108,7 @@ export class Git {
     }
 
     getDiffs(): Diff[] {
-        const diffs = execSync(`git diff --name-status ${this.remoteBranch}`, {
+        const diffs = execSync(`git diff --name-status ${this.remoteName}/${this.remoteBranch}`, {
             cwd: this.workspacePath,
             encoding: 'utf-8',
         })
