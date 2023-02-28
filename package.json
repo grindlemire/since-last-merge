@@ -40,16 +40,16 @@
     },
     "colors": [
       {
-          "id": "editorManager.treeItemTextForeground",
-          "description": "Color for a TreeIteem label",
-          "defaults": {
-              "dark": "#00ccff",   
-              "light": "#000000",
-              "highContrast": "errorForeground" 
-          }
+        "id": "editorManager.treeItemTextForeground",
+        "description": "Color for a TreeIteem label",
+        "defaults": {
+          "dark": "#00ccff",
+          "light": "#000000",
+          "highContrast": "errorForeground"
+        }
       }
     ],
-    "configuration":[
+    "configuration": [
       {
         "title": "SinceLastMerge",
         "properties": {
