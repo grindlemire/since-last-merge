@@ -37,6 +37,8 @@ export function activate(context: vscode.ExtensionContext) {
 
     const myscm = vscode.scm.createSourceControl('since-last-merge', 'since-merge');
     myscm.quickDiffProvider = diffViewerProvider;
+    myscm.inputBox.visible = false;
+    myscm.inputBox.enabled = false;
 }
 
 // This method is called when your extension is deactivated
