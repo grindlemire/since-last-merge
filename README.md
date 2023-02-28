@@ -1,6 +1,6 @@
-# git-file-list README
+# since-last-merge README
 
-This is the README for your extension "git-file-list". After writing up a brief description, we recommend including the following sections.
+This is the README for your extension "since-last-merge". After writing up a brief description, we recommend including the following sections.
 
 ## Features
 

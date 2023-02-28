@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { getDiffs, getDiff } from './git';
+import { Git } from './git';
 
 export class GitFilesChangedProvider implements vscode.TreeDataProvider<string> {
     private _onDidChangeTreeData: vscode.EventEmitter<string | undefined> = new vscode.EventEmitter<
@@ -8,17 +8,19 @@ export class GitFilesChangedProvider implements vscode.TreeDataProvider<string> 
     readonly onDidChangeTreeData: vscode.Event<string | undefined> = this._onDidChangeTreeData.event;
 
     private workspacePath: string = '';
+    private git: Git;
 
-    constructor(private context: vscode.ExtensionContext) {
+    constructor(private context: vscode.ExtensionContext, git: Git) {
+        this.git = git;
         if (vscode.workspace.workspaceFolders !== undefined) {
             this.workspacePath = vscode.workspace.workspaceFolders[0].uri.path;
             let f = vscode.workspace.workspaceFolders[0].uri.fsPath;
 
-            const message = `git-file-list: folder: ${this.workspacePath}`;
+            const message = `since-last-merge: folder: ${this.workspacePath}`;
 
             vscode.window.showInformationMessage(message);
         } else {
-            const message = 'git-file-list: Working folder not found, open a folder an try again';
+            const message = 'since-last-merge: Working folder not found, open a folder an try again';
 
             vscode.window.showInformationMessage(message);
         }
@@ -29,9 +31,9 @@ export class GitFilesChangedProvider implements vscode.TreeDataProvider<string> 
     }
 
     getTreeItem(element: string): vscode.TreeItem | Thenable<vscode.TreeItem> {
-        const diff = getDiff(this.workspacePath, element);
+        const diff = this.git.getDiff(element);
         var treeItem: vscode.TreeItem = new vscode.TreeItem(diff.name);
-        treeItem.resourceUri = vscode.Uri.file(diff.path + '/.git-file-list');
+        treeItem.resourceUri = vscode.Uri.file(diff.path + '/.since-last-merge');
         treeItem.tooltip = diff.path;
         treeItem.id = diff.path;
         treeItem.command = {
@@ -43,7 +45,7 @@ export class GitFilesChangedProvider implements vscode.TreeDataProvider<string> 
     }
 
     getChildren(element?: string | undefined): vscode.ProviderResult<string[]> {
-        return getDiffs(this.workspacePath).map((diff) => diff.path);
+        return this.git.getDiffs().map((diff) => diff.path);
     }
 
     getParent?(element: string): vscode.ProviderResult<string> {

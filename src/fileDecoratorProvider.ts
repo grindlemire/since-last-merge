@@ -1,12 +1,14 @@
 import * as vscode from 'vscode';
-import { getDiff, getColor, changeToString } from './git';
+import { Git } from './git';
 
 export class FileDecoratorProvider implements vscode.FileDecorationProvider {
     onDidChangeFileDecorations?: vscode.Event<vscode.Uri | vscode.Uri[] | undefined> | undefined;
 
     private workspacePath: string = '';
+    private git: Git;
 
-    constructor(private context: vscode.ExtensionContext) {
+    constructor(private context: vscode.ExtensionContext, git: Git) {
+        this.git = git;
         if (vscode.workspace.workspaceFolders !== undefined) {
             this.workspacePath = vscode.workspace.workspaceFolders[0].uri.path;
         }
@@ -16,9 +18,9 @@ export class FileDecoratorProvider implements vscode.FileDecorationProvider {
         uri: vscode.Uri,
         token: vscode.CancellationToken
     ): vscode.ProviderResult<vscode.FileDecoration> {
-        if (uri.toString().endsWith('/.git-file-list')) {
-            const diff = getDiff(this.workspacePath, uri.path.substring(1, uri.path.indexOf('/.git-file-list')));
-            return new vscode.FileDecoration(changeToString(diff?.change), undefined, getColor(diff));
+        if (uri.toString().endsWith('/.since-last-merge')) {
+            const diff = this.git.getDiff(uri.path.substring(1, uri.path.indexOf('/.since-last-merge')));
+            return new vscode.FileDecoration(this.git.changeToString(diff?.change), undefined, this.git.getColor(diff));
         }
         return null;
     }

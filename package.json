@@ -1,6 +1,6 @@
 {
-  "name": "git-file-list",
-  "displayName": "git-file-list",
+  "name": "since-last-merge",
+  "displayName": "since-last-merge",
   "description": "",
   "version": "0.0.1",
   "engines": {
@@ -25,14 +25,14 @@
     "commands": [
       {
         "title": "GLF: Open File",
-        "command": "git-file-list.open",
+        "command": "since-last-merge.open",
         "icon": "$(compare-changes)"
       }
     ],
     "menus": {
       "view/item/context": [
         {
-          "command": "git-file-list.open",
+          "command": "since-last-merge.open",
           "when": "view == git-files-changed",
           "group": "inline"
         }
@@ -48,7 +48,24 @@
               "highContrast": "errorForeground" 
           }
       }
-  ]
+    ],
+    "configuration":[
+      {
+        "title": "SinceLastMerge",
+        "properties": {
+          "SinceLastMerge.remoteName": {
+            "type": "string",
+            "default": "origin",
+            "description": "The remote to compare against."
+          },
+          "SinceLastMerge.remoteBranch": {
+            "type": "string",
+            "default": "main",
+            "description": "The remote branch to compare against."
+          }
+        }
+      }
+    ]
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
