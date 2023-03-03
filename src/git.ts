@@ -17,21 +17,21 @@ export interface Diff {
 
 export class Git {
     private workspacePath: string = '';
-    private remoteBranch: string = 'main';
-    private remoteName: string = 'origin';
+    public remoteBranch: string = 'main';
+    public remoteName: string = 'origin';
 
     constructor(private context: vscode.ExtensionContext) {
         if (vscode.workspace.workspaceFolders !== undefined) {
             this.workspacePath = vscode.workspace.workspaceFolders[0].uri.path;
         }
 
-        const remoteBranch: string = vscode.workspace.getConfiguration('SinceLastMerge').get('remoteBranch') || 'main';
+        const remoteBranch: string = vscode.workspace.getConfiguration('SinceLastMerge').get('remoteBranch') || Git.inferBranch(this.workspacePath);
         const remoteName: string = vscode.workspace.getConfiguration('SinceLastMerge').get('remoteName') || 'origin';
         this.remoteName = remoteName;
         this.remoteBranch = remoteBranch;
         vscode.workspace.onDidChangeConfiguration((e: any) => {
             const remoteBranch: string =
-                vscode.workspace.getConfiguration('SinceLastMerge').get('remoteBranch') || 'main';
+                vscode.workspace.getConfiguration('SinceLastMerge').get('remoteBranch') || Git.inferBranch(this.workspacePath);
             const remoteName: string =
                 vscode.workspace.getConfiguration('SinceLastMerge').get('remoteName') || 'origin';
 
@@ -44,6 +44,14 @@ export class Git {
             }
             this.remoteName = remoteName;
             this.remoteBranch = remoteBranch;
+        });
+    }
+
+    // adapted from https://gist.github.com/joechrysler/6073741
+    static inferBranch(workspacePath: string): string {
+        return execSync(`git show-branch -a 2>/dev/null | grep '\*' | grep -v "$(git rev-parse --abbrev-ref HEAD)" | head -n1 | sed 's/.*\\[\\(.*\\)\\].*/\\1/' | sed 's/[\\^~].*//' | xargs echo -n`, {
+            cwd: workspacePath,
+            encoding: 'utf-8',
         });
     }
 

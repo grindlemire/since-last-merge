@@ -63,8 +63,8 @@
           },
           "SinceLastMerge.remoteBranch": {
             "type": "string",
-            "default": "main",
-            "description": "The remote branch to compare against."
+            "default": "",
+            "description": "The remote branch override to compare against."
           }
         }
       }

@@ -39,6 +39,17 @@ export function activate(context: vscode.ExtensionContext) {
     myscm.quickDiffProvider = diffViewerProvider;
     myscm.inputBox.visible = false;
     myscm.inputBox.enabled = false;
+    // const myresourcegroup = myscm.createResourceGroup('foobar-resource-group', 'my resource group');
+    // myresourcegroup.resourceStates = [
+    //     {
+    //         resourceUri: vscode.Uri.parse('since-last-merge:internal/log_analysis/log_processor/customlogs/customlogs.go'), 
+    //         // decorations: { 
+    //         //     dark: {iconPath: {id: "compare-changes"}}, 
+    //         //     light: {iconPath: {id: "compare-changes"}}
+    //         // }
+    //     }
+    // ];
+    
 }
 
 // This method is called when your extension is deactivated

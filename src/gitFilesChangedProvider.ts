@@ -36,6 +36,7 @@ export class GitFilesChangedProvider implements vscode.TreeDataProvider<string> 
         treeItem.resourceUri = vscode.Uri.file(diff.path + '/.since-last-merge');
         treeItem.tooltip = diff.path;
         treeItem.id = diff.path;
+        treeItem.description = this.git.remoteBranch;
         treeItem.command = {
             title: 'open file',
             command: 'vscode.open',

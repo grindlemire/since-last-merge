@@ -18,6 +18,13 @@ export class FileDecoratorProvider implements vscode.FileDecorationProvider {
         uri: vscode.Uri,
         token: vscode.CancellationToken
     ): vscode.ProviderResult<vscode.FileDecoration> {
+
+        // if (uri.scheme === "since-last-merge") {
+            
+        //     const diff = this.git.getDiff(uri.path);
+        //     console.log(`DECORATING: ${uri.path} | ${diff.change}`);
+        //     return new vscode.FileDecoration(this.git.changeToString(diff?.change), undefined, this.git.getColor(diff));
+        // }
         if (uri.toString().endsWith('/.since-last-merge')) {
             const diff = this.git.getDiff(uri.path.substring(1, uri.path.indexOf('/.since-last-merge')));
             return new vscode.FileDecoration(this.git.changeToString(diff?.change), undefined, this.git.getColor(diff));
