@@ -25,13 +25,16 @@ export class Git {
             this.workspacePath = vscode.workspace.workspaceFolders[0].uri.path;
         }
 
-        const remoteBranch: string = vscode.workspace.getConfiguration('SinceLastMerge').get('remoteBranch') || Git.inferBranch(this.workspacePath);
+        const remoteBranch: string =
+            vscode.workspace.getConfiguration('SinceLastMerge').get('remoteBranch') ||
+            Git.inferBranch(this.workspacePath);
         const remoteName: string = vscode.workspace.getConfiguration('SinceLastMerge').get('remoteName') || 'origin';
         this.remoteName = remoteName;
         this.remoteBranch = remoteBranch;
         vscode.workspace.onDidChangeConfiguration((e: any) => {
             const remoteBranch: string =
-                vscode.workspace.getConfiguration('SinceLastMerge').get('remoteBranch') || Git.inferBranch(this.workspacePath);
+                vscode.workspace.getConfiguration('SinceLastMerge').get('remoteBranch') ||
+                Git.inferBranch(this.workspacePath);
             const remoteName: string =
                 vscode.workspace.getConfiguration('SinceLastMerge').get('remoteName') || 'origin';
 
@@ -49,10 +52,13 @@ export class Git {
 
     // adapted from https://gist.github.com/joechrysler/6073741
     static inferBranch(workspacePath: string): string {
-        return execSync(`git show-branch -a 2>/dev/null | grep '\*' | grep -v "$(git rev-parse --abbrev-ref HEAD)" | head -n1 | sed 's/.*\\[\\(.*\\)\\].*/\\1/' | sed 's/[\\^~].*//' | xargs echo -n`, {
-            cwd: workspacePath,
-            encoding: 'utf-8',
-        });
+        return execSync(
+            `git show-branch -a 2>/dev/null | grep '\*' | grep -v "$(git rev-parse --abbrev-ref HEAD)" | head -n1 | sed 's/.*\\[\\(.*\\)\\].*/\\1/' | sed 's/[\\^~].*//' | xargs echo -n`,
+            {
+                cwd: workspacePath,
+                encoding: 'utf-8',
+            }
+        );
     }
 
     toChange(str: string): Change {

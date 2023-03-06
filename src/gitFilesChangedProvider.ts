@@ -9,6 +9,7 @@ export class GitFilesChangedProvider implements vscode.TreeDataProvider<string> 
 
     private workspacePath: string = '';
     private git: Git;
+    private recentlyUpdated: boolean = false;
 
     constructor(private context: vscode.ExtensionContext, git: Git) {
         this.git = git;
@@ -26,7 +27,21 @@ export class GitFilesChangedProvider implements vscode.TreeDataProvider<string> 
         }
 
         vscode.workspace.onDidSaveTextDocument((document: vscode.TextDocument) => {
-            this._onDidChangeTreeData.fire(undefined);
+            this.debounceRefresh();
+        });
+
+        const workspaceFolder = vscode.workspace.workspaceFolders?.[0] || '';
+        const watcher = vscode.workspace.createFileSystemWatcher(
+            new vscode.RelativePattern(workspaceFolder, '.git/**')
+        );
+        watcher.onDidChange(() => {
+            this.debounceRefresh();
+        });
+        watcher.onDidCreate(() => {
+            this.debounceRefresh();
+        });
+        watcher.onDidDelete(() => {
+            this.debounceRefresh();
         });
     }
 
@@ -58,5 +73,15 @@ export class GitFilesChangedProvider implements vscode.TreeDataProvider<string> 
         token: vscode.CancellationToken
     ): vscode.ProviderResult<vscode.TreeItem> {
         throw new Error('Method not implemented.');
+    }
+
+    debounceRefresh(ms = 100) {
+        if (this.recentlyUpdated) {
+            return;
+        }
+        this.recentlyUpdated = true;
+        console.log('firing update event');
+        this._onDidChangeTreeData.fire(undefined);
+        setTimeout(() => (this.recentlyUpdated = false), ms);
     }
 }

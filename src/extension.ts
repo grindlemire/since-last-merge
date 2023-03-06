@@ -42,14 +42,13 @@ export function activate(context: vscode.ExtensionContext) {
     // const myresourcegroup = myscm.createResourceGroup('foobar-resource-group', 'my resource group');
     // myresourcegroup.resourceStates = [
     //     {
-    //         resourceUri: vscode.Uri.parse('since-last-merge:internal/log_analysis/log_processor/customlogs/customlogs.go'), 
-    //         // decorations: { 
-    //         //     dark: {iconPath: {id: "compare-changes"}}, 
+    //         resourceUri: vscode.Uri.parse('since-last-merge:internal/log_analysis/log_processor/customlogs/customlogs.go'),
+    //         // decorations: {
+    //         //     dark: {iconPath: {id: "compare-changes"}},
     //         //     light: {iconPath: {id: "compare-changes"}}
     //         // }
     //     }
     // ];
-    
 }
 
 // This method is called when your extension is deactivated
